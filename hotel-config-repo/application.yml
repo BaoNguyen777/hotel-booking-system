@@ -1,0 +1,17 @@
+# Common config for all microservices
+
+spring:
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
