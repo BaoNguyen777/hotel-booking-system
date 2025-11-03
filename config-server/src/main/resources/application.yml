@@ -1,12 +1,20 @@
+server:
+  port: 8888
+
 spring:
   application:
     name: config-server
+
   cloud:
     config:
       server:
         git:
-          uri: https://github.com/BaoNguyen777/hotel-booking-system/hotel-config-repo
+          uri: https://github.com/BaoNguyen777/hotel-config-repo.git
           default-label: main
           clone-on-start: true
-server:
-  port: 8888
+          force-pull: true
+
+logging:
+  level:
+    org.springframework.cloud.config.server: DEBUG
+    org.eclipse.jgit: DEBUG
