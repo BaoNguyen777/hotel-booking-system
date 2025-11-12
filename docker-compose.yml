@@ -1,0 +1,111 @@
+version: "3.9"
+
+services:
+  mysql-db:
+    image: mysql:8
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - hotel-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+
+  config-server:
+    image: config-server:latest
+    container_name: config-server
+    ports:
+      - "${CONFIG_SERVER_PORT}:8888"
+    networks:
+      - hotel-net
+    restart: unless-stopped
+
+  eureka-server:
+    image: eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "${EUREKA_SERVER_PORT}:8761"
+    depends_on:
+      - config-server
+    networks:
+      - hotel-net
+    restart: unless-stopped
+
+  gateway-service:
+    image: gateway-service:latest
+    container_name: gateway-service
+    ports:
+      - "${GATEWAY_PORT}:8080"
+    depends_on:
+      - eureka-server
+      - config-server
+      - user-service
+      - hotel-service
+      - booking-service
+    networks:
+      - hotel-net
+    restart: unless-stopped
+
+  user-service:
+    image: user-service:latest
+    container_name: user-service
+    ports:
+      - "${USER_SERVICE_PORT}:8081"
+    depends_on:
+      - mysql-db
+      - config-server
+      - eureka-server
+    environment:
+      SPRING_DATASOURCE_URL: ${USER_SERVICE_DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${USER_SERVICE_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${USER_SERVICE_DB_PASSWORD}
+    networks:
+      - hotel-net
+    restart: unless-stopped
+
+  hotel-service:
+    image: hotel-service:latest
+    container_name: hotel-service
+    ports:
+      - "${HOTEL_SERVICE_PORT}:8082"
+    depends_on:
+      - mysql-db
+      - config-server
+      - eureka-server
+    environment:
+      SPRING_DATASOURCE_URL: ${HOTEL_SERVICE_DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${HOTEL_SERVICE_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${HOTEL_SERVICE_DB_PASSWORD}
+    networks:
+      - hotel-net
+    restart: unless-stopped
+
+  booking-service:
+    image: booking-service:latest
+    container_name: booking-service
+    ports:
+      - "${BOOKING_SERVICE_PORT}:8083"
+    depends_on:
+      - user-service
+      - hotel-service
+      - mysql-db
+      - config-server
+      - eureka-server
+    environment:
+      SPRING_DATASOURCE_URL: ${BOOKING_SERVICE_DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${BOOKING_SERVICE_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${BOOKING_SERVICE_DB_PASSWORD}
+    networks:
+      - hotel-net
+    restart: unless-stopped
+
+networks:
+  hotel-net:
+    driver: bridge

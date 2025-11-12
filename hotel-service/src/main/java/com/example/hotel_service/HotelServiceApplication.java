@@ -1,13 +1,13 @@
-package com.example.payment_service;
+package com.example.hotel_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class HotelServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(HotelServiceApplication.class, args);
 	}
 
 }
