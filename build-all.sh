@@ -3,7 +3,14 @@
 
 set -e  # dừng khi có lỗi
 
-SERVICES=("user-service" "hotel-service" "booking-service" "gateway-service")
+SERVICES=(
+  "user-service"
+  "hotel-service"
+  "booking-service"
+  "gateway-service"
+  "config-server"
+  "eureka-server"
+)
 
 for SERVICE in "${SERVICES[@]}"; do
   echo "=== Building $SERVICE ==="

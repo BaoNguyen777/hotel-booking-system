@@ -1,6 +1,6 @@
 server:
   port: 8081
-  
+
 spring:
   application:
     name: user-service
@@ -14,12 +14,10 @@ spring:
     show-sql: true
   cloud:
     config:
-      enabled: false
-      import-check:
-        enabled: false
+      enabled: true  # bật lại
   config:
-    import: optional:configserver:http://localhost:8888/
+    import: optional:configserver:http://config-server:8888/
 
-  logging:
-    level:
-      org.springframework.security: DEBUG
+logging:
+  level:
+    org.springframework.security: DEBUG

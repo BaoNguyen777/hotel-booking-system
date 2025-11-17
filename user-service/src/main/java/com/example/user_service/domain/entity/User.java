@@ -1,4 +1,4 @@
-package com.example.user_service.entity;
+package com.example.user_service.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

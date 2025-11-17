@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: gateway-service
+  config:
+    import: optional:configserver:http://localhost:8888/
 
   cloud:
     gateway:
@@ -20,6 +22,10 @@ spring:
           uri: http://booking-service:8083
           predicates:
             - Path=/bookings/**
+        - id: payment-service
+          uri: http://payment-service:8084
+          predicates:
+            - Path=/payments/**
 
 eureka:
   client:
